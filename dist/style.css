@@ -1,0 +1,33 @@
+html, body, div, pre, h5 {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0e0e10;
+  color: #efefef;
+  font:  111%/150% Helvetica, arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#wrap {
+  display: flex;
+  flex-direction: column;
+  background:  #161616;
+  border: 1px solid #292929;
+  padding: 0 1em 1em 1em;
+  margin: 1em;
+  max-width: 880px;
+}
+
+#images {
+  display:  flex;
+  flex-direction: column;
+}
+
+img {
+  max-width: 450px;
+  height: auto;
+}
