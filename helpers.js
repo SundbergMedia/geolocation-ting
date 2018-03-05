@@ -1,8 +1,7 @@
 var Promise = require('bluebird');
-var prettyjson = require('prettyjson');
 var config = require('./config');
-var coords = config.coords;
 var request = require('request');
+var coords = config.coords;
 var dns = require('dns');
 var whois = require('whois');
 var log = console.log;
@@ -15,7 +14,6 @@ const EXTERNAL_IP = process.env.EXTERNAL_IP;
 
 // helper: HTTP GET request -> JSON object or HTML string
 function returnJson(url) {
-  log('>> URL', url);
   return new Promise(function(resolve, reject) {
     return request.get(url, function(err, response, body) {
       return resolve((isJson(body) ? JSON.parse(body) : body));
@@ -110,6 +108,11 @@ function getCoordData(coordinates) {
 // TODO: validate URL, etc...
 function dnsLookup(url, callback) {
   return new Promise(function(resolve, reject) {
+    
+    // return quick if is IP
+    var isDomain = (url.match(/[a-z]/i));
+    if(!isDomain) return resolve(url);
+
     return dns.lookup(url, function(err, result) {
       if(err) reject(err);
       console.log(result);
@@ -130,20 +133,18 @@ function whoisLookup(url) {
 function resolveHostName(address) {
   return new Promise(function(resolve, reject) {
     if(!address || address == undefined) return reject('(no data)'); // reject if missing address
-
-    if(address.match(/[a-z]/i)) {
-      // try resolve by DNS lookup
-      // TODO: validate URL?
-      resolve(dnsLookup(address));
-    } else {
-      // TODO: validate IP address
-      resolve(address);
-    }
+    var isDomain = (address.match(/[a-z]/i));
+    resolve((isDomain) ? dnsLookup(address) : address);
   }); 
 }
 
 function isLocalIp(ip) {
   return (ip.indexOf('127.0.0.1') > -1 || ip.indexOf('::1') > -1 || ip.indexOf('localhost') > -1);
+}
+
+// contains at least 2 alpha chars and a .
+function isDomain(name) {
+  return (name.match(/[a-z]/i));
 }
 
 function getExternalIp() {
