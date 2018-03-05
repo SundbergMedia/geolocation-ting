@@ -126,13 +126,6 @@ function whoisLookup(url) {
   });
 }
 
-function resolveHostName(address) {
-  return new Promise(function(resolve, reject) {
-    if(!address || address == undefined) return reject('(no data)'); // reject if missing address
-    resolve((isDomain(address)) ? dnsLookup(address) : address);
-  }); 
-}
-
 function isLocalIp(ip) {
   return (ip.indexOf('127.0.0.1') > -1 || ip.indexOf('::1') > -1 || ip.indexOf('localhost') > -1);
 }
