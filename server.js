@@ -47,6 +47,29 @@ app.get('/', function (req, res) {
 
 });
 
+// get options for external IP
+app.get('/ip/:ip', function (req, res) {
+  var ip = req.params.ip;
+  log(chalk.red('GETTING INFO FOR ADDRESS:' + ip));
+  log(chalk.blue('Hello') + ' World' + chalk.red('!'));
+
+  getIpData(ip).then(function(data) {
+    data.input = req.params.ip;
+    log('DATA:', data);
+    res.render('template', { herp: 'Stats for ' + ip, data: data }) // render HTML template
+  });
+
+});
+
+// whois lookup
+// TODO: validate domain name
+app.get('/whois/:domain', function (req, res) {  
+  helpers.whoisLookup(req.params.domain).then(function(data) {
+    log('WHOIS data:', data);
+    res.send('<pre>' + data + '</pre>');
+  })
+});
+
 // spin up the server
 app.listen(config.port, function () {
   log(config.name, 'server running on port:', config.port);
