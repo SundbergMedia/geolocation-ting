@@ -36,6 +36,69 @@ app.use('/data', require('./routes.js'));
 app.locals.pretty = true;
 
 
+// get external IP on init
+// (function() {
+//   console.log('INIT');
+//   helpers.getExternalIp().then(function(ip) {
+//     console.log('External IP:', ip);
+//     localIp = ip; // set local external IP
+//     // process.exit(); // kill a kill
+//   })
+// })();
+
+
+// helper; get data for IP
+function getIpData(ip) {
+  log('Get data for IP:', ip);
+  return new Promise(function(resolve, reject) {
+    if(!ip || ip == undefined) return resolve('(no data)');
+    if(helpers.isLocalIp(ip)) ip = localIp; // use local external IP if local IP
+
+    // TODO: this needs to be wrapped in a separated helper...
+    helpers.dnsLookup(ip)
+    .then(helpers.getCoords())
+    .then(function(data) {
+      log('COORDS dataa:', data);
+      let extra = data;
+      let coords = data.latitude + ',' + data.longitude;
+      helpers.getCoordData(coords).then(function(data) {
+        data.ip = ip;
+        data.extra = extra;
+        data.map = helpers.getGoogleMap(coords);
+        data.mapZoomed = helpers.getGoogleMap(coords, 13); // extra zoom
+        
+        if(data.extra.latitude) {
+          let diffCoords = data.extra.latitude + ',' + data.extra.longitude;
+          data.mapZoomedAlt = helpers.getGoogleMap(diffCoords, 13);
+        } else {
+          data.mapZoomedAlt = false;
+        }
+        return data;
+        // resolve(data);
+      })
+      .then(resolve);
+    })
+    // .then(resolve);
+  });
+}
+
+// helper: revolve domain name to IP adress by DNS lookup
+function resolveHostName(address) {
+  return new Promise(function(resolve, reject) {
+    // reject if missing address
+    if(!address || address == undefined) return reject('(no data)');
+
+    if(address.match(/[a-z]/i)) {
+      // try resolve by DNS lookup
+      // TODO: validate URL?
+      resolve(helpers.dnsLookup(address));
+    } else {
+      // TODO: validate IP address
+      resolve(address);
+    }
+
+  }); 
+}
 
 // index page; get data for the client's IP address
 app.get('/', function (req, res) {
