@@ -136,9 +136,7 @@ function isDomain(name) {
 }
 
 function getExternalIp() {
-  return returnJson(EXTERNAL_IP_URL).then(function(ip) {
-    return Promise.resolve(ip);
-  })
+  return returnJson(EXTERNAL_IP_URL);
 }
 
 
@@ -162,5 +160,4 @@ module.exports = {
   isLocalIp, 
   getExternalIp,
   getIpData,
-  resolveHostName,
 }

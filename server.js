@@ -40,8 +40,9 @@ app.get('/', function (req, res) {
 
 // get data for external IP or domain name
 app.get('/ip/:ip', function (req, res) {
-  helpers.getIpData(getIp(req)).then(function(data) {
-    data.input = req.params.ip;
+  var ip = getIp(req);
+  helpers.getIpData(ip).then(function(data) {
+    data.input = ip;
     log('DATA:', data);
     res.render('template', { herp: 'Stats for ' + ip, data: data }) // render HTML template
   });
