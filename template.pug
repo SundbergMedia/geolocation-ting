@@ -1,0 +1,48 @@
+- keys = ['ip', 'city', 'latitude', 'longitude']
+- search = "location.href='http://localhost:4466/ip/' + document.getElementById('url').value;"
+
+
+html
+  head
+    title= herp
+    link(rel="stylesheet" href="/style.css")
+
+
+  body
+
+    #wrap
+
+      #search
+        h4 Search
+        form
+          input(name="url" id="url" placeholder="Search by domain name or IP")
+          input(type="button" onclick=search value="Search")
+
+
+      #title
+        h1= herp
+        p This page retreives some geolocation data using your IP adress. 
+
+
+      #info
+        table
+          each val, index in keys
+            tr
+              td= val
+              td= data[val]
+
+
+      #images
+        img(src=data.map)
+        img(src=data.mapZoomed)
+        img(src=data.mapZoomedAlt)
+
+
+      #raw
+        h5 Raw data
+        pre
+          = JSON.stringify(data, null, 2)
+
+
+      script.
+        console.log('We can say hello in this!');
