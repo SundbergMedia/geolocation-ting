@@ -108,11 +108,7 @@ function getCoordData(coordinates) {
 // TODO: validate URL, etc...
 function dnsLookup(url, callback) {
   return new Promise(function(resolve, reject) {
-    
-    // return quick if is IP
-    var isDomain = (url.match(/[a-z]/i));
-    if(!isDomain) return resolve(url);
-
+    if(!isDomain(url)) return resolve(url); // avoid lookup when handling IP addresses
     return dns.lookup(url, function(err, result) {
       if(err) reject(err);
       console.log(result);
@@ -133,8 +129,7 @@ function whoisLookup(url) {
 function resolveHostName(address) {
   return new Promise(function(resolve, reject) {
     if(!address || address == undefined) return reject('(no data)'); // reject if missing address
-    var isDomain = (address.match(/[a-z]/i));
-    resolve((isDomain) ? dnsLookup(address) : address);
+    resolve((isDomain(address)) ? dnsLookup(address) : address);
   }); 
 }
 
